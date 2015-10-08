@@ -147,8 +147,7 @@ Optim_bBM_bounds_estimated=function(tree,trait,Npts=100){
     }
     x0=bounds[1]+(bounds[2]-bounds[1])*(which(tree_formatted2$Pos[[tree_formatted2$tab[i,1]]]==max(tree_formatted2$Pos[[tree_formatted2$tab[i,1]]]))-1)/(Npts-1)
     res=list(par=list(bounds=bounds,sigsq=2*exp(opt$par[1]),root_value=x0),lnL=-opt$value,k=4,aic=2*(4+opt$value),aicc=2*(4+opt$value)+40/(length(trait)-5),method='L-BFGS-B',convergence=opt$convergence,message=opt$message,root_density=tree_formatted2$Pos[[tree_formatted2$tab[i,1]]])
-	return(res)
-	
+	return(res)	
 }
 
 ##################################################
@@ -175,13 +174,13 @@ Optim_bBM_bounds_estimated=function(tree,trait,Npts=100){
 # in all of the 4 plots, the log-likelihood surface is plotted as a black curve and the ML value is indicated by a vertical red line
 
 # The object returned by the function is a list containing:
-# ML estimated for the 4 parameters of the BBM model ($par),
+# ML estimates for the 4 parameters of the BBM model ($par),
 # the log-likelihood,
 # the number of parameters (k=4),
 # aic, aicc,
 # the method used for the optimization of sigma ('Brent' or 'L-BFGS-B' depending on the option chose for 'bounds', see details in the help of the 'optim' function)
 # messages from 'optim' related to possible convergence issues
-# confidence intervals for parameter estimates if 'uncertainty=TRUE' (not the default)
+# confidence intervals for parameter estimates if 'uncertainty=TRUE' (not in default settings)
 
 fit_BBM_model_uncertainty=function(tree,trait,Npts=100,bounds='Fixed',uncertainty=F, effort_uncertainty=100){
 	if (is.phylo(tree)==FALSE){stop("Phylogenetic tree should be in phylo format")}
