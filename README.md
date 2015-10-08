@@ -2,4 +2,4 @@ BBM provides a set of R functions to fit a bounded brownian motion (BBM) model o
 
 These functions only depend on the {ape} package in R and likelihoods are compatible with those of other models fitted by the 'fitContinuous' function in package {geiger}.
 
-Functions were written by Florian C. Boucher and Vincent Démery.
+Functions were written by Florian Boucher and Vincent Démery.
