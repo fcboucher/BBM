@@ -48,7 +48,6 @@ ConvProp_bounds=function(X,t,dCoeff,dMat,bounds){
 # A list is also initiated, filled with the position (probabilistic) of each tip and 1 for internal nodes.
 FormatTree_bounds=function(tree,trait,Npts,bounds){
 require(ape)	
-#bounds=c(min(trait),max(trait))
 tree=reorder.phylo(tree,'postorder')
 ntips=length(tree$tip.label)
 tab=cbind(tree$edge,tree$edge.length) ; colnames(tab)=c('parent','children','brlen')
@@ -64,7 +63,7 @@ for (i in 1:(2*ntips-1)){
 return(list(tab=tab,Pos=Pos))
 }
 
-# calculate log-likelihood over the whole tree, to be minimized
+# calculate log-likelihood over the whole tree, to be maximized
 LogLik_bounds=function(tree_formatted,dCoeff,dMat,bounds){
 #tree_formatted obtained through FormatTree
 Npts=dim(dMat$diag)[1]
@@ -98,7 +97,7 @@ Optim_bBM_bounds_fixed=function(tree,trait,Npts=100,bounds=NULL){
     dMat=DiffMat(Npts)
     fun= bBM_loglik_bounds(tree_formatted,dMat,bounds)
 	opt=optim(par=var(trait)/max(branching.times(tree)),fn=fun,method='Brent',lower=-30,upper=10,hessian=FALSE)
-    # dCoeff is log(sigma)
+    # dCoeff is log(sigma^2)/log(2)
     # now retrieve the ML value of x0, using the ML of dCoeff
     tree_formatted2= tree_formatted
     for (i in 1:dim(tree_formatted2$tab)[1]){
@@ -135,8 +134,6 @@ Optim_bBM_bounds_estimated=function(tree,trait,Npts=100){
 		return(-LogLik_bounds_opt(tree,trait,pars[1],Npts,bounds=c(-exp(pars[2])+min(trait),exp(pars[3])+max(trait))))
 	}
 	opt=optim(par=c(var(trait)/max(branching.times(tree)),0,0),fn=fun,method='L-BFGS-B',lower=c(-30,-20,-20),upper=c(10,20,20),hessian=FALSE)
-    # dCoeff is log(sigma)
-    # now retrieve the ML value of x0, using the ML of dCoeff
     bounds=c(-exp(opt$par[2])+min(trait),exp(opt$par[3])+max(trait))
     tree_formatted=FormatTree_bounds(tree,trait,Npts,bounds)
     tree_formatted2= tree_formatted #
