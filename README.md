@@ -4,4 +4,4 @@ These functions only depend on the {ape} package in R and likelihoods are compat
 
 Functions were written by Florian Boucher and Vincent Démery.
 
-In order to use the code, copy the 'BBM_functions_bounds_estimated_or_not_plus_uncertainty_with_CIs.R' R script, send all of it to R, and finally use the master function: 'fit_BBM_model_uncertainty'. Details on its use are given as comments in the script: please read them.
+In order to use the code, copy or download the 'BBM_functions_bounds_estimated_or_not_plus_uncertainty_with_CIs.R' R script, send all of it to R, and finally use the master function: 'fit_BBM_model_uncertainty'. Details on its use are given as comments in the script: please read them.
