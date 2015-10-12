@@ -186,16 +186,16 @@ fit_BBM_model_uncertainty=function(tree,trait,Npts=100,bounds='Fixed',uncertaint
 	if ((all(names(trait)%in%tree$tip.label)==F)|(all(tree$tip.label%in%names(trait))==F)){stop("Names of the trait vector do not match tip labels")}
 
 if (bounds=='Fixed'){
-		res=Optim_bBM_bounds_fixed(tree,trait,Npts=100,bounds=NULL)
+		res=Optim_bBM_bounds_fixed(tree,trait,Npts,bounds=NULL)
 	}
 if (is.numeric(bounds)){
 	if (length(bounds)==2){
-		res=Optim_bBM_bounds_fixed(tree,trait,Npts=100,bounds=bounds)
+		res=Optim_bBM_bounds_fixed(tree,trait,Npts,bounds=bounds)
 		}
 	else {stop("The vector of bounds should have two elements.")}	
 	}
 if (bounds=='Estimate'){
-		res=Optim_bBM_bounds_estimated(tree,trait,Npts=100)
+		res=Optim_bBM_bounds_estimated(tree,trait,Npts)
 	}	
 # uncertainty assessment
 if (uncertainty==T){
