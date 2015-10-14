@@ -97,7 +97,7 @@ Optim_bBM_bounds_fixed=function(tree,trait,Npts=100,bounds=NULL){
     dMat=DiffMat(Npts)
     fun= bBM_loglik_bounds(tree_formatted,dMat,bounds)
 	opt=optim(par=var(trait)/max(branching.times(tree)),fn=fun,method='Brent',lower=-30,upper=10,hessian=FALSE)
-    # dCoeff is log(sigma^2)/log(2)
+    # dCoeff is log(sigma^2/2)
     # now retrieve the ML value of x0, using the ML of dCoeff
     tree_formatted2= tree_formatted
     for (i in 1:dim(tree_formatted2$tab)[1]){
