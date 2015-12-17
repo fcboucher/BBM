@@ -8,7 +8,7 @@ tree$edge.length=100*tree$edge.length/max(branching.times(tree)) # rescale the t
 TRAIT= Sim_BBM(tree,x0=0,Npts=50,sigma=1,bounds=c(-5, 5)) # TRAIT simulated on the tree, with many hits on the bounds: for that you need to source the function 'Sim_BBM.R'
 hist(TRAIT,breaks=20) # the distribution of the trait at the tips of the tree is rather flat...
 
-# Fit the model to the data simulated
+# Fit the model to the data simulated: we use only 50 points for discretizing the trait interval to make it faster, but more points should be used on empirical datasets
 BBM=fit_BBM_model_uncertainty(tree,trait=TRAIT,Npts=50,bounds='Fixed',uncertainty=F) # bounds fixed to min/max of the observed trait, no assessment of uncertainty
 BBM.1=fit_BBM_model_uncertainty(tree,trait=TRAIT,Npts=50,bounds='Estimate',uncertainty=F) # ML value of bounds estimated along other parameters
 BBM.2=fit_BBM_model_uncertainty(tree,trait=TRAIT,Npts=50,bounds='Fixed',uncertainty=T, effort_uncertainty=100) # bounds fixed to min/max of the trait, but uncertainty measured. This will produce a plot of log-likelihood profiles around ML estimates of parameters 
