@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+# Function to simulate a BBM process on a phylogenetic tree
+>>>>>>> master
 Sim_BBM=function(tree,x0,Npts,sigma,bounds){
 	dCoeff=log((sigma)^2/2) # the coefficient of diffusion of the model
 	dMat= DiffMat(Npts)
@@ -10,4 +14,8 @@ for (i in 1:length(tree$edge.length)){
 }
 TRAIT=trait[1:ntips] ; names(TRAIT)=tree$tip.label
 	return(TRAIT)
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> master
