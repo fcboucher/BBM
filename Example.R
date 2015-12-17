@@ -6,7 +6,7 @@ library(geiger) # geiger is needed for simulating the tree
 tree=sim.bdtree(stop='taxa',n=50) # tree with 20 tips
 tree$edge.length=100*tree$edge.length/max(branching.times(tree)) # rescale the tree to  a total depth of 100
 TRAIT= Sim_BBM(tree,x0=0,Npts=50,sigma=1,bounds=c(-5, 5)) # TRAIT simulated on the tree, with many hits on the bounds: for that you need to source the function 'Sim_BBM.R'
-hist(TRAIT,breaks=20) # the distribution of the trait at the tips of the tree is rather flat...
+hist(TRAIT,breaks=20) # the distribution of the trait at the tips of the tree: it should be rather flat...
 
 # Fit the model to the data simulated: we use only 50 points for discretizing the trait interval to make it faster, but more points should be used on empirical datasets
 BBM=fit_BBM_model_uncertainty(tree,trait=TRAIT,Npts=50,bounds='Fixed',uncertainty=F) # bounds fixed to min/max of the observed trait, no assessment of uncertainty
