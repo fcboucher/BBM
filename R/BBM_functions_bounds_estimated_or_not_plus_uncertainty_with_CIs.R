@@ -1,5 +1,5 @@
 # Set of functions to fit the Bounded Brownian Motion model
-# Written by F. Boucher & V. Démery, October 7th, 2015
+# Written by F. Boucher & V. Démery. Last version January 18th, 2016
 
 ###############################################################################
 ####### SET OF AUXILIARY FUNCTIONS USED BY THE MASTER FUNCTION BELOW ##########
@@ -161,14 +161,14 @@ Optim_bBM_bounds_estimated=function(tree,trait,Npts=100){
 # 2) it is also possible to specify some values for the bounds by providing a vector with two values c(min,max). This can be useful to explore the likelihood function for the bounds around the ML estimate, but we rather recommend to use 'uncertainty=TRUE' (see below) for that purpose
 # 3) If one does not trust option 1), the bounds can be estimated along with other parameters
 # In our experience, this takes on average c. 10 more times than option 1) and is generally less reliable: if you use that option, always check the likelihood value returned by option 1), it should almost always be equal or higher.  
-# When setting 'uncertainty=TRUE', the function will also estimate uncertainty around ML estimates of the parameter. It will calculate the confidence intervals over which the the likelihood is higher than half of the maximum likelihood and return them. 
+# When setting 'uncertainty=TRUE', the function will also estimate uncertainty around ML estimates of the parameter. It will calculate the confidence intervals over which the the likelihood is higher than half of the maximum likelihood and return them. CHANGE THAT!!!!!!!!!!!!!!!!!
 # The 'effort_uncertainty' parameter sets the number of points that are used to calculate the likelihood surface around ML estimates (default to 100, which generally gives graphs that are smooth enough)
 # In addition, 'uncertainty=TRUE' will also produce plots of:
 # 1) the log-likelihood left of the lower bound, all other parameters set to their ML estimate
 # 2) the log-likelihood right of the upper bound, all other parameters set to their ML estimate
 # 3) the log-likelihood around the ML value of sig2, all other parameters set to their ML estimate
 # 4) the density of probability for the value of the trait at the root of the tree
-# in all of the 4 plots, the log-likelihood surface is plotted as a black curve and the ML value is indicated by a vertical red line
+# in all of the 4 plots, the log-likelihood surface is plotted as a black curve, the ML value is indicated by a vertical red line, and the two extremes of the 95% CI are plotted with dashed blue lines (sometimes one of them lies at the ML and is thus hidden)
 
 # The object returned by the function is a list containing:
 # ML estimates for the 4 parameters of the BBM model ($par),
@@ -205,39 +205,59 @@ if (uncertainty==T){
     bounds=c(min(trait),max(trait))
     tree_formatted= FormatTree_bounds(tree,trait,Npts,bounds)
     dMat=DiffMat(Npts)
-    dCoeff=log(res$par$sigsq/2) # check...
-    # likelihood around lower bound
+    dCoeff=log(res$par$sigsq/2)
+    
+    # likelihood around MLE of lower bound
     ll_lower_bound=as.data.frame(matrix(NA, effort_uncertainty,2))
     colnames(ll_lower_bound)=c('lower_bound','loglik')
     ll_lower_bound$lower_bound=seq(from=(bounds[1]-3*(bounds[2]-bounds[1])),to=bounds[1], length.out=effort_uncertainty)
     ll_lower_bound$loglik=sapply(ll_lower_bound$lower_bound,FUN=function(x){LogLik_bounds(tree_formatted,dCoeff,dMat,bounds=c(x,bounds[2]))})
-     # likelihood around upper bound
+    ll_cond=exp(ll_lower_bound[,2])/sum(exp(ll_lower_bound[,2]))
+    CDF=sapply(1:length(ll_cond),FUN=function(x){sum(ll_cond[c(x:length(ll_cond))])})
+    CI95_lower_bound=c(ll_lower_bound[min(which(CDF<0.95)),1], ll_lower_bound[dim(ll_lower_bound)[1],1])
+    
+    # likelihood around MLE of upper bound
     ll_upper_bound=as.data.frame(matrix(NA, effort_uncertainty,2))
     colnames(ll_upper_bound)=c('upper_bound','loglik')
     ll_upper_bound$upper_bound=seq(from=bounds[2],to=(bounds[2]+3*(bounds[2]-bounds[1])), length.out=effort_uncertainty)
     ll_upper_bound$loglik=sapply(ll_upper_bound$upper_bound,FUN=function(x){LogLik_bounds(tree_formatted,dCoeff,dMat,bounds=c(bounds[1],x))})
-    # likelihood around ML of sigma 2
+    ll_cond2=exp(ll_upper_bound[,2])/sum(exp(ll_upper_bound[,2]))
+    CDF2=sapply(1:length(ll_cond2),FUN=function(x){sum(ll_cond2[c(1:x)])})
+    CI95_upper_bound=c(ll_upper_bound[1,1], ll_upper_bound[max(which(CDF2<0.95)),1])
+    
+    # likelihood around MLE of sigma 2
     ll_sig2=as.data.frame(matrix(NA, effort_uncertainty,2))
     colnames(ll_sig2)=c('sig2','loglik')
     ll_sig2$sig2 =seq(from=(res$par$sigsq/10),to=(res$par$sigsq*10), length.out=effort_uncertainty)
     ll_sig2$loglik=sapply(ll_sig2$sig2,FUN=function(x){LogLik_bounds(tree_formatted,log(x/2),dMat,bounds)})
-	# confidence intervals
-	lnL=res$lnL
-	CI_sigsq=c(min(ll_sig2[which(ll_sig2[,2]>(lnL-2)),1]),max(ll_sig2[which(ll_sig2[,2]>(lnL-2)),1]))
-	CI_lower_bound=c(min(ll_lower_bound[which(ll_lower_bound[,2]>(lnL-2)),1]),max(ll_lower_bound[which(ll_lower_bound[,2]>(lnL-2)),1]))
-	CI_upper_bound=c(min(ll_upper_bound[which(ll_upper_bound[,2]>(lnL-2)),1]),max(ll_upper_bound[which(ll_upper_bound[,2]>(lnL-2)),1]))
-	cells_x0=c(min(which(res$root_density>(max(res$root_density)/2))),max(which(res$root_density>(max(res$root_density)/2))))
-	CI_x0=res$par$bounds[1]+(res$par$bounds[2]-res$par$bounds[1])/(Npts-1)*(cells_x0-1)
-	res$Confidence_intervals=list(CI_lower_bound = CI_lower_bound,CI_upper_bound = CI_upper_bound,CI_sigsq = CI_sigsq,CI_root_value= CI_x0)
+    ll_cond3=exp(ll_sig2[,2])/sum(exp(ll_sig2[,2]))
+    CDF_right=sapply(1:length(ll_cond3),FUN=function(x){sum(ll_cond3[c(1:x)])})
+    CDF_left=sapply(1:length(ll_cond3),FUN=function(x){sum(ll_cond3[c(x:length(ll_cond3))])})
+    CI95_sig2=c(ll_sig2[min(which(CDF_right>0.025)),1],ll_sig2[max(which(CDF_left>0.025)),1])
+	
+	# likelihood around MLE of root value     
+	CDF_root_right=sapply(1:length(res$root_density),FUN=function(x){sum(res$root_density[c(1:x)])})
+    CDF_root_left=sapply(1:length(res$root_density),FUN=function(x){sum(res$root_density[c(x:length(res$root_density))])})
+    cells_root=c(min(which(CDF_root_right>0.025)),max(which(CDF_root_left>0.025)))
+    if (res$par$root_value==res$par$bounds[1]){cells_root=c(1,max(which(CDF_root_left>0.05)))}
+    if (res$par$root_value==res$par$bounds[2]){cells_root=c(min(which(CDF_root_right>0.05)),length(res$root_density))}
+	CI95_root=res$par$bounds[1]+(res$par$bounds[2]-res$par$bounds[1])/(Npts-1)*(cells_root-1)
+	
+	res$Confidence_intervals=list(CI95_lower_bound = CI95_lower_bound, CI95_upper_bound = CI95_upper_bound, CI95_sig2 = CI95_sig2, CI95_root = CI95_root)
+	
 	# plots of likelihood profile
 	par(mfrow=c(2,2))
 	plot(ll_lower_bound[,1:2],type='l',main='Loglik profile left of ML estimate of lower bound')
+	abline(v= CI95_lower_bound,col=4,lty='dashed')
 	abline(v=min(trait),col=2,lwd=2)
 	plot(ll_upper_bound[,1:2],type='l',main='Loglik profile right of ML estimate of upper bound') 
+	abline(v= CI95_upper_bound,col=4,lty='dashed')
 	abline(v=max(trait),col=2,lwd=2)
 	plot(ll_sig2[,1:2],type='l',main='Loglik profile around ML estimate of sig2',log='x') 
+	abline(v= CI95_sig2,col=4,lty='dashed')
 	abline(v=res$par$sigsq,col=2,lwd=2)	
 	plot(res$root_density~seq(from=min(trait),to=max(trait),length.out=Npts),type='l',main='Density of probability for trait at the root',xlab='Root value',ylab='Probability density')
+	abline(v= CI95_root,col=4,lty='dashed')
 	abline(v=res$par$root_value,col=2,lwd=2)
 }
 	return(res)
