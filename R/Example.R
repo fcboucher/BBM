@@ -18,7 +18,7 @@ BBM.1$par # in particular, check the ML estimates of the bounds: are they close 
 
 # which optimization performed best?
 BBM$lnL
-BBM.1$lnL # normally, BBM.1 should have a likelihood higher or equal than BBM, since BBM is a special case of BBM.1 (we fixed bounds in BBM). However, it often happens that BBM get higher likelihood, this is because it is easier to optimize...
+BBM.1$lnL # normally, BBM.1 should have a likelihood higher or equal than BBM, since BBM is a special case of BBM.1 (we fixed bounds in BBM). However, it often happens that BBM gets a higher likelihood, this is because it is easier to optimize since it has fewer parameters...
 
 # AICc comparison with other classic models of evolution implemented in package {geiger}
 BM=fitContinuous(phy=tree,dat=TRAIT,model='BM') # Brownian motion with no bounds
