@@ -1,7 +1,4 @@
 BBM provides a set of R functions to fit a bounded brownian motion (BBM) model of evolution to phylogenetic comparative data using maximum likelihood. In the BBM model, a continuous trait evolves under brownian motion with a constant evolutionary rate, but between two reflective bounds.
-<p align="center">
-<div style="text-align:center"><img width="60%" align="center" alt="capture d ecran 2016-02-18 a 22 44 39" src="https://cloud.githubusercontent.com/assets/15023761/13159291/4450bcdc-d691-11e5-8138-bcb94d22a0df.png">
-</p>
 
 These functions only depend on the {ape} package in R and likelihoods are compatible with those of other models fitted by the 'fitContinuous' function in package {geiger}.
 
