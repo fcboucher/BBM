@@ -6,4 +6,6 @@ Functions were written by [Florian Boucher](https://sites.google.com/site/floria
 
 In order to use the code, copy or download the 'BBM_functions_bounds_estimated_or_not_plus_uncertainty_with_CIs.R' R script, send all of it to R, and finally use the master function: 'fit_BBM_model_uncertainty'. Details on its use are given as comments in the script: please read them.
 
+There are currently no help pages for these functions but R scripts are heavily commented and should give you all the information needed on parameters, outputs, etc.
+
 An example of use is given in the script 'Example.R'. It uses the 'Sim_BBM.R' function to simulate traits evolving under BBM.
