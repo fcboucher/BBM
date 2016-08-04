@@ -9,4 +9,4 @@ In order to use the code, copy or download the 'BBM_functions_bounds_estimated_o
 
 There are currently no help pages for these functions but R scripts are heavily commented and should give you all the information needed on parameters, outputs, etc.
 
-An example of use is given in the script 'Example.R'. It uses the 'Sim_BBM.R' function to simulate traits evolving under BBM.
+An example of use is given [here](https://github.com/fcboucher/BBM/blob/master/R/Example.R). It uses the 'Sim_BBM.R' function to simulate traits evolving under BBM.
