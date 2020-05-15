@@ -1,5 +1,5 @@
 ## CAUTION
-A more general version of the **BBM** model has been developped, which includes deterministic forces (e.g. selection) potentially acting on trait values on top of the BBM process. Documentation and R code to fit this new model can be found [here](https://github.com/fcboucher/BBMV/), and this R code will be more reliable to estimate parameters of the **BBM** model.
+A more general version of the **BBM** model has been developped, which includes deterministic forces (e.g. selection) potentially acting on trait values on top of the BBM process. Documentation and R code to fit this new model can be found [here](https://github.com/fcboucher/BBMV/), and this R code is more reliable to estimate parameters of the **BBM** model. You will find explanations on how to fit the **BBM** model on this [page](https://github.com/fcboucher/BBMV/blob/master/FAQ-Troubleshooting.md)
 
 ## BBM
 
